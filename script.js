@@ -4,7 +4,9 @@ const stopButton = document.getElementById("stop");
 const resetButton = document.getElementById("reset");
 const saveButton = document.getElementById("save");
 const sessionToggleButton = document.getElementById("sessionToggle")
+const settingsToggleButton = document.getElementById("settingsToggle")
 const sessionList = document.getElementById("sessionList");
+const settingsPanel = document.getElementById("settingsPanel")
 
 let startTime = 0
 let elapsedTime = 0
@@ -76,18 +78,21 @@ function saveSession(){
     sessions.push(session);
     displaySessions();
     saveButton.disabled=true;
-
+    startButton.disabled=true;
     localStorage.setItem("sessions", JSON.stringify(sessions))
 }
 
+//refresh session list
 function displaySessions(){
-    // Show/hide toggle button based on whether there are sessions
-    if(sessions.length > 0){
-        sessionToggleButton.removeAttribute("hidden");
-    } else {
-        sessionToggleButton.setAttribute("hidden", "hidden");
-    }
     sessionList.innerHTML = ""
+    // Add best time display at the top
+    let bestSession = findBestTime();
+    if(bestSession){
+        let bestDiv = document.createElement("div");
+        bestDiv.textContent = "Best: " + formatTimer(bestSession.time);
+        sessionList.appendChild(bestDiv);
+    }
+
     sessions.forEach(
         //index numbers can be kept track of in here because of JS' foreach bells and whistles
         function(session, index){
@@ -102,9 +107,15 @@ function displaySessions(){
             sessionList.appendChild(div); 
         }
     );
+    //shows the session list and sets dropdown button image
     sessionList.removeAttribute("hidden")
     sessionToggleButton.innerHTML = "▲"
-
+    // Show/hide toggle button based on whether there are sessions
+    if(sessions.length > 0){
+        sessionToggleButton.removeAttribute("hidden");
+    } else {
+        sessionToggleButton.setAttribute("hidden", "hidden");
+    }
 }
 
 function loadPrevSessions(){
@@ -133,16 +144,42 @@ function toggleSessions(){
     }
 }
 
+function toggleSettings(){
+    if(settingsPanel.hasAttribute('hidden')){
+        settingsPanel.removeAttribute("hidden");
+    } else
+    {
+        settingsPanel.setAttribute("hidden", "hidden");
+    }
+}
+
+function findBestTime(){
+    if(sessions.length == 0){
+        return null;
+    };
+    
+    let best = sessions[0];  // start with first session
+    
+    sessions.forEach((session) => { 
+        if (session.time > best.time){
+            best = session
+        }
+    })
+    return best;
+}
+
 document.addEventListener('DOMContentLoaded', loadPrevSessions);
 startButton.addEventListener('click', startTimer)
 stopButton.addEventListener('click', stopTimer)
 resetButton.addEventListener('click', resetTimer)
 saveButton.addEventListener("click", saveSession)
 sessionToggleButton.addEventListener("click", toggleSessions)
+settingsToggleButton.addEventListener("click", toggleSettings)
 
 
 /*To-do list:
-Display best record prominently
-Toggle between detailed time (00:08:34.52) and simplified (2hours 8 minutes 34 seconds)
-CSS styling (with color palette)
+Toggle best mode (longest vs shortest) - goes in settings
+Custom timer label ("What are you timing?") - goes in settings
+Simplified time format toggle (00:08:34 vs "8 minutes 34 seconds") - goes in settings
+CSS styling with your color palette
 Cat doodles (stretch goal)*/
