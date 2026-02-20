@@ -3,6 +3,7 @@ const startButton = document.getElementById("start");
 const stopButton = document.getElementById("stop");
 const resetButton = document.getElementById("reset");
 const saveButton = document.getElementById("save");
+const sessionToggleButton = document.getElementById("sessionToggle")
 const sessionList = document.getElementById("sessionList");
 
 let startTime = 0
@@ -80,6 +81,12 @@ function saveSession(){
 }
 
 function displaySessions(){
+    // Show/hide toggle button based on whether there are sessions
+    if(sessions.length > 0){
+        sessionToggleButton.removeAttribute("hidden");
+    } else {
+        sessionToggleButton.setAttribute("hidden", "hidden");
+    }
     sessionList.innerHTML = ""
     sessions.forEach(
         //index numbers can be kept track of in here because of JS' foreach bells and whistles
@@ -94,7 +101,10 @@ function displaySessions(){
             div.appendChild(deleteButton);
             sessionList.appendChild(div); 
         }
-    )
+    );
+    sessionList.removeAttribute("hidden")
+    sessionToggleButton.innerHTML = "▲"
+
 }
 
 function loadPrevSessions(){
@@ -112,8 +122,27 @@ function deleteSession(index){
     displaySessions()
 }
 
+function toggleSessions(){
+    if(sessionList.hasAttribute('hidden')){
+        sessionList.removeAttribute("hidden");
+        sessionToggleButton.innerHTML = "▲"
+    } else
+    {
+        sessionList.setAttribute("hidden", "hidden");
+        sessionToggleButton.innerHTML = "▼"
+    }
+}
+
 document.addEventListener('DOMContentLoaded', loadPrevSessions);
 startButton.addEventListener('click', startTimer)
 stopButton.addEventListener('click', stopTimer)
 resetButton.addEventListener('click', resetTimer)
 saveButton.addEventListener("click", saveSession)
+sessionToggleButton.addEventListener("click", toggleSessions)
+
+
+/*To-do list:
+Display best record prominently
+Toggle between detailed time (00:08:34.52) and simplified (2hours 8 minutes 34 seconds)
+CSS styling (with color palette)
+Cat doodles (stretch goal)*/
