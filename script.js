@@ -82,11 +82,15 @@ function saveSession(){
 function displaySessions(){
     sessionList.innerHTML = ""
     sessions.forEach(
+        //index numbers can be kept track of in here because of JS' foreach bells and whistles
         function(session, index){
             let div = document.createElement("div");
             div.textContent = formatTimer(session.time) + " - " + session.date;
             let deleteButton = document.createElement("button");
             deleteButton.innerHTML = "<span class=material-symbols-outlined> delete </span>";
+            deleteButton.onclick = function() {
+                deleteSession(index);
+            };
             div.appendChild(deleteButton);
             sessionList.appendChild(div); 
         }
@@ -98,7 +102,15 @@ function loadPrevSessions(){
     if (saved) {
         sessions = JSON.parse(saved);
         displaySessions();
-    }}
+    }
+}
+
+function deleteSession(index){
+    //remove 1 element from the sessions array
+    sessions.splice(index,1);
+    localStorage.setItem("sessions", JSON.stringify(sessions));
+    displaySessions()
+}
 
 document.addEventListener('DOMContentLoaded', loadPrevSessions);
 startButton.addEventListener('click', startTimer)
