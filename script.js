@@ -2,7 +2,8 @@ const timer = document.getElementById("timer");
 const startButton = document.getElementById("start");
 const stopButton = document.getElementById("stop");
 const resetButton = document.getElementById("reset");
-const saveButton = document.getElementById("save")
+const saveButton = document.getElementById("save");
+const sessionList = document.getElementById("sessionList");
 
 let startTime = 0
 let elapsedTime = 0
@@ -37,6 +38,7 @@ function stopTimer(){
     stopButton.disabled=true;
     clearInterval(timerInterval);
     saveButton.removeAttribute("hidden");
+    saveButton.disabled=false;
 }
 
 //converts milliseconds into human readable time.
@@ -65,6 +67,41 @@ function resetTimer(){
     saveButton.setAttribute("hidden", "hidden");
 }
 
+function saveSession(){
+    let session = {
+        time: elapsedTime,
+        date: new Date().toLocaleDateString(),
+    };
+    sessions.push(session);
+    displaySessions();
+    saveButton.disabled=true;
+
+    localStorage.setItem("sessions", JSON.stringify(sessions))
+}
+
+function displaySessions(){
+    sessionList.innerHTML = ""
+    sessions.forEach(
+        function(session, index){
+            let div = document.createElement("div");
+            div.textContent = formatTimer(session.time) + " - " + session.date;
+            let deleteButton = document.createElement("button");
+            deleteButton.innerHTML = "<span class=material-symbols-outlined> delete </span>";
+            div.appendChild(deleteButton);
+            sessionList.appendChild(div); 
+        }
+    )
+}
+
+function loadPrevSessions(){
+    let saved = localStorage.getItem("sessions");
+    if (saved) {
+        sessions = JSON.parse(saved);
+        displaySessions();
+    }}
+
+document.addEventListener('DOMContentLoaded', loadPrevSessions);
 startButton.addEventListener('click', startTimer)
 stopButton.addEventListener('click', stopTimer)
 resetButton.addEventListener('click', resetTimer)
+saveButton.addEventListener("click", saveSession)
