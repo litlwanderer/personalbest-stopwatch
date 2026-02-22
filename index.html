@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <h1>
+    <h1 id="timerLabel">
         Stopwatch
     </h1>
     <div id="timer"> 
@@ -29,18 +29,21 @@
         <span class="material-symbols-outlined">more_vert</span>
     </button>
     <div id="settingsPanel" hidden>
-      <button id="bestModeToggle">Mode: Longest</button>
-      <div id="about">
+
+        <button id="bestModeToggle">Best: Longest</button>
+        <br>
+        <input type="text" id="timerLabelInput" placeholder="What are you timing?">
+        <div id="about">
         <h2>
             About
         </h2>
         <p1>
-            A hobby project for me to learn html, js and css (but fun)
-            Cat doodles coming soon!
-
+            A hobby project for me to learn html, js and css (but fun) <br>
+            <br> Cat doodles coming soon! <br>
             (Actually more of a dog person but cats are more fun to draw)
         </p1>
-      </div>
+        </div>
+
     </div>
 
     <script src ="script.js"> </script>

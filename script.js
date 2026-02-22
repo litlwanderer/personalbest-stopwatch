@@ -7,10 +7,15 @@ const sessionToggleButton = document.getElementById("sessionToggle")
 const settingsToggleButton = document.getElementById("settingsToggle")
 const sessionList = document.getElementById("sessionList");
 const settingsPanel = document.getElementById("settingsPanel")
+//SettingsPanel contents:
+const bestModeToggleButton = document.getElementById("bestModeToggle")
+const timerLabelInput = document.getElementById("timerLabelInput");
+const timerLabel = document.getElementById("timerLabel");
 
 let startTime = 0
 let elapsedTime = 0
 let sessions = []
+let isBestModeLonger = true
 
 function startTimer(){
     //condition allows timer to resume if paused, not restart
@@ -119,9 +124,33 @@ function displaySessions(){
 }
 
 function loadPrevSessions(){
-    let saved = localStorage.getItem("sessions");
-    if (saved) {
-        sessions = JSON.parse(saved);
+    //load user setting preferences
+    let savedBestMode = localStorage.getItem("isBestModeLonger")
+    console.log("Loaded from storage:", savedBestMode);
+    console.log("Type:", typeof savedBestMode);
+    if (savedBestMode !== null)
+        { //convert to bool
+            isBestModeLonger = (savedBestMode === "true")
+        }
+    console.log("isBestModeLonger is now:", isBestModeLonger);
+
+    if (isBestModeLonger)
+    {
+        bestModeToggleButton.innerHTML = "Best: Longer"
+    } else
+    {
+        bestModeToggleButton.innerHTML = "Best: Faster"
+    };
+
+    let savedTimerLabel = localStorage.getItem("timerLabel");
+    if (savedTimerLabel){
+        timerLabel.textContent = savedTimerLabel
+    }
+
+    //load sessions
+    let savedSessions = localStorage.getItem("sessions");
+    if (savedSessions) {
+        sessions = JSON.parse(savedSessions);
         displaySessions();
     }
 }
@@ -153,6 +182,7 @@ function toggleSettings(){
     }
 }
 
+//best time can either be fastest or longest time depending on settings
 function findBestTime(){
     if(sessions.length == 0){
         return null;
@@ -161,25 +191,74 @@ function findBestTime(){
     let best = sessions[0];  // start with first session
     
     sessions.forEach((session) => { 
-        if (session.time > best.time){
-            best = session
+        if (isBestModeLonger){
+            if (session.time > best.time){
+                best = session
+            }
+        } else
+        {
+            if (session.time < best.time){
+                best = session
+            }
         }
     })
     return best;
 }
 
 document.addEventListener('DOMContentLoaded', loadPrevSessions);
-startButton.addEventListener('click', startTimer)
-stopButton.addEventListener('click', stopTimer)
-resetButton.addEventListener('click', resetTimer)
-saveButton.addEventListener("click", saveSession)
-sessionToggleButton.addEventListener("click", toggleSessions)
-settingsToggleButton.addEventListener("click", toggleSettings)
+startButton.addEventListener('click', startTimer);
+stopButton.addEventListener('click', stopTimer);
+resetButton.addEventListener('click', resetTimer);
+saveButton.addEventListener("click", saveSession);
+sessionToggleButton.addEventListener("click", toggleSessions);
+settingsToggleButton.addEventListener("click", toggleSettings);
+//settings panel event handlers:
+bestModeToggleButton.addEventListener("click", () => {
+    isBestModeLonger = !isBestModeLonger;
+    if (isBestModeLonger)
+    {
+        bestModeToggleButton.innerHTML = "Best: Longer"
+    } else
+    {
+        bestModeToggleButton.innerHTML = "Best: Faster"
+    };
+    localStorage.setItem("isBestModeLonger", isBestModeLonger);
+    //call displaysessions again to refresh
+    displaySessions();
+});
+timerLabelInput.addEventListener('input', () => {
+    let newLabel = timerLabelInput.value;
+    if (newLabel == "") {
+        timerLabel.textContent = "Stopwatch";  // default
+    } else {
+        timerLabel.textContent = newLabel;
+    }
+    localStorage.setItem("timerLabel", newLabel);
+});
 
 
-/*To-do list:
-Toggle best mode (longest vs shortest) - goes in settings
-Custom timer label ("What are you timing?") - goes in settings
-Simplified time format toggle (00:08:34 vs "8 minutes 34 seconds") - goes in settings
-CSS styling with your color palette
-Cat doodles (stretch goal)*/
+/*
+**MEGA TO-DO LIST:**
+
+**Functionality To-Do:**
+1. Settings panel contents:
+   - "What are you timing?" label input
+   - Time format toggle (detailed/simplified)
+   - Dark/light mode toggle
+2. Implement all those toggles + localStorage for each
+3. CSS styling with color palette
+4. Dark mode CSS
+
+**Cat Feature To-Do:**
+5. Draw cats (32 drawings):
+   - 4 time-of-day cats (morning/afternoon/evening/night)
+   - Each cat needs:
+     * 4 frames of progressive sleepiness (for "longer is better" mode)
+     * 4 frames of running animation (for "shorter is better" mode)
+   - Bonus: rare surprise cat (stretch goal) - maybe a frog?
+6. Implement cat system:
+   - Pick cat based on time of day at page load
+   - Animate sleepiness progression in "longer" mode
+   - Animate dashing across screen in "shorter" mode
+   - Random rare cat appearance
+*/
