@@ -2,9 +2,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Personal Best Stopwatch</title>
-    <link href = "./styles.css" rel "stylesheet">
+    <link href = "styles.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=delete" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Spline+Sans+Mono:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -12,7 +15,7 @@
         Stopwatch
     </h1>
     <div id="timer"> 
-        00:00:00
+        0s
     </div>
 
     <div id="buttons">
@@ -28,22 +31,31 @@
     <button id="settingsToggle">
         <span class="material-symbols-outlined">more_vert</span>
     </button>
-    <div id="settingsPanel" hidden>
-
-        <button id="bestModeToggle">Best: Longest</button>
-        <br>
-        <input type="text" id="timerLabelInput" placeholder="What are you timing?">
-        <div id="about">
-        <h2>
-            About
-        </h2>
-        <p1>
-            A hobby project for me to learn html, js and css (but fun) <br>
-            <br> Cat doodles coming soon! <br>
-            (Actually more of a dog person but cats are more fun to draw)
-        </p1>
+    <div id="settingsModal" hidden>
+        <div id="settingsContent"></div>
+            <button id="bestModeToggle">Best: Longest</button>
+            <br>
+            <button id="timeFormatToggle">Time Format: Simple</button>
+            <br>
+            <input maxlength="32" type="text" id="timerLabelInput" placeholder="What are you timing?">
+            <div id="about">
+            <h2>
+                About
+            </h2>
+            <p1>
+                A hobby project for me to learn html, js and css (but fun) <br>
+                <br> Cat doodles coming soon! <br>
+                (Actually more of a dog person but cats are more fun to draw)
+            </p1>
+            <br>
+            <button id="hardReset">Full reset</button>
+            </div>
+            <div id="confirmModal" hidden>
+                <p>Are you sure you want to delete all saved times and preferences?</p>
+                <button id="confirmYes">Yes</button>
+                <button id="confirmNo">Cancel</button>
+            </div>
         </div>
-
     </div>
 
     <script src ="script.js"> </script>

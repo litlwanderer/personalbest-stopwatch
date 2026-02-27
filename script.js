@@ -6,16 +6,19 @@ const saveButton = document.getElementById("save");
 const sessionToggleButton = document.getElementById("sessionToggle")
 const settingsToggleButton = document.getElementById("settingsToggle")
 const sessionList = document.getElementById("sessionList");
-const settingsPanel = document.getElementById("settingsPanel")
-//SettingsPanel contents:
+const settingsModal = document.getElementById("settingsModal")
+//settingsModal contents:
 const bestModeToggleButton = document.getElementById("bestModeToggle")
+const timeFormatToggleButton = document.getElementById("timeFormatToggle")
 const timerLabelInput = document.getElementById("timerLabelInput");
 const timerLabel = document.getElementById("timerLabel");
+const hardResetButton = document.getElementById("hardReset");
 
 let startTime = 0
 let elapsedTime = 0
 let sessions = []
 let isBestModeLonger = true
+let isSimpleFormat = true
 
 function startTimer(){
     //condition allows timer to resume if paused, not restart
@@ -38,7 +41,12 @@ function startTimer(){
 
 function updateTimer(){
     elapsedTime = Date.now()-startTime;
-    timer.textContent = formatTimer(elapsedTime);
+    if (isSimpleFormat){
+        timer.textContent = formatTimerCompact(elapsedTime);
+    } else
+    {
+        timer.textContent = formatTimer(elapsedTime)
+    }
 }
 
 function stopTimer(){
@@ -66,10 +74,57 @@ function formatTimer(elapsedTime){
         (mseconds > 9 ? mseconds : "0" + mseconds));
 }
 
+//credit to claude 
+function formatTimerSimplified(elapsedTime){
+    const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+    const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60))
+    const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+    let result="";
+    
+    if (hours > 0) {
+        result += hours + (hours === 1 ? " hour" : " hours");
+        if (minutes > 0) {
+            result += " " + minutes + (minutes === 1 ? " minute" : " minutes");
+        }
+    } else if (minutes>0)
+    {
+        result += minutes + (minutes === 1 ? " minute" : " minutes");
+        if (seconds > 0) {
+            result += " " + seconds + (seconds === 1 ? " second" : " seconds");
+        }
+    } else {
+        result += seconds + (seconds===1 ? " second" : " seconds")
+    }
+
+    return result;
+}
+
+//yes, very much credit to claude hahaha
+function formatTimerCompact(elapsedTime) {
+    const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+    const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+    
+    let result = "";
+    if (hours > 0) {
+        result += hours + "h " + minutes + "m";
+    } else if (minutes > 0) {
+        result += minutes + "m " + seconds + "s";
+    } else {
+        result += seconds + "s";
+    }
+    return result;
+}
+
 function resetTimer(){
     clearInterval(timerInterval);
     elapsedTime = 0;
-    timer.textContent = formatTimer(elapsedTime);
+    if (isSimpleFormat){
+        timer.textContent = formatTimerCompact(elapsedTime);
+    } else
+    {
+        timer.textContent = formatTimer(elapsedTime)
+    }
     startButton.disabled = false;
     stopButton.disabled=true;
     saveButton.setAttribute("hidden", "hidden");
@@ -94,7 +149,7 @@ function displaySessions(){
     let bestSession = findBestTime();
     if(bestSession){
         let bestDiv = document.createElement("div");
-        bestDiv.textContent = "Best: " + formatTimer(bestSession.time);
+        bestDiv.textContent = "Best: " + (isSimpleFormat ? formatTimerSimplified(bestSession.time) : formatTimer(bestSession.time));
         sessionList.appendChild(bestDiv);
     }
 
@@ -102,7 +157,7 @@ function displaySessions(){
         //index numbers can be kept track of in here because of JS' foreach bells and whistles
         function(session, index){
             let div = document.createElement("div");
-            div.textContent = formatTimer(session.time) + " - " + session.date;
+            div.textContent = (isSimpleFormat ? formatTimerSimplified(session.time) : formatTimer(session.time)) + " - " + session.date;
             let deleteButton = document.createElement("button");
             deleteButton.innerHTML = "<span class=material-symbols-outlined> delete </span>";
             deleteButton.onclick = function() {
@@ -126,13 +181,10 @@ function displaySessions(){
 function loadPrevSessions(){
     //load user setting preferences
     let savedBestMode = localStorage.getItem("isBestModeLonger")
-    console.log("Loaded from storage:", savedBestMode);
-    console.log("Type:", typeof savedBestMode);
     if (savedBestMode !== null)
         { //convert to bool
             isBestModeLonger = (savedBestMode === "true")
         }
-    console.log("isBestModeLonger is now:", isBestModeLonger);
 
     if (isBestModeLonger)
     {
@@ -140,6 +192,21 @@ function loadPrevSessions(){
     } else
     {
         bestModeToggleButton.innerHTML = "Best: Faster"
+    };
+
+    let savedTimeFormat = localStorage.getItem("isSimpleFormat")
+    if (savedTimeFormat !== null)
+        { //convert to bool
+            isSimpleFormat = (savedTimeFormat === "true")
+        }
+    if (isSimpleFormat)
+    {
+        timeFormatToggleButton.innerHTML = "Time Format: Simple";
+        timer.textContent = formatTimerCompact(elapsedTime);
+    } else
+    {
+        timeFormatToggleButton.innerHTML = "Time Format: Extended";
+        timer.textContent = formatTimer(elapsedTime);
     };
 
     let savedTimerLabel = localStorage.getItem("timerLabel");
@@ -174,11 +241,11 @@ function toggleSessions(){
 }
 
 function toggleSettings(){
-    if(settingsPanel.hasAttribute('hidden')){
-        settingsPanel.removeAttribute("hidden");
+    if(settingsModal.hasAttribute('hidden')){
+        settingsModal.removeAttribute("hidden");
     } else
     {
-        settingsPanel.setAttribute("hidden", "hidden");
+        settingsModal.setAttribute("hidden", "hidden");
     }
 }
 
@@ -226,8 +293,22 @@ bestModeToggleButton.addEventListener("click", () => {
     //call displaysessions again to refresh
     displaySessions();
 });
+timeFormatToggleButton.addEventListener("click", ()=>{
+    isSimpleFormat = !isSimpleFormat;
+    if (isSimpleFormat)
+    {
+        timeFormatToggleButton.innerHTML = "Time Format: Simple"
+    } else
+    {
+        timeFormatToggleButton.innerHTML = "Time Format: Extended"
+    };
+    localStorage.setItem("isSimpleFormat", isSimpleFormat);
+    //call displaysessions and stopped timer display to refresh
+    timer.textContent = isSimpleFormat ? formatTimerCompact(elapsedTime) : formatTimer(elapsedTime);
+    displaySessions();
+});
 timerLabelInput.addEventListener('input', () => {
-    let newLabel = timerLabelInput.value;
+    let newLabel = timerLabelInput.value.trim();
     if (newLabel == "") {
         timerLabel.textContent = "Stopwatch";  // default
     } else {
@@ -235,6 +316,19 @@ timerLabelInput.addEventListener('input', () => {
     }
     localStorage.setItem("timerLabel", newLabel);
 });
+//hard reset button
+hardResetButton.addEventListener("click", ()=>{
+    confirmModal.removeAttribute("hidden");
+})
+confirmYes.addEventListener('click', () => {
+    localStorage.clear();
+    window.location.reload()
+    confirmModal.setAttribute("hidden", "hidden");
+});
+confirmNo.addEventListener('click', () => {
+    confirmModal.setAttribute("hidden", "hidden");
+});
+//end hard rest button
 
 
 /*
@@ -242,9 +336,9 @@ timerLabelInput.addEventListener('input', () => {
 
 **Functionality To-Do:**
 1. Settings panel contents:
-   - "What are you timing?" label input
    - Time format toggle (detailed/simplified)
    - Dark/light mode toggle
+   - Reset all preferences button
 2. Implement all those toggles + localStorage for each
 3. CSS styling with color palette
 4. Dark mode CSS

@@ -1,0 +1,59 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    /* Your color palette */
+    --olive: #4D4B39;
+    --mint: #72FBE0;
+    --green: #40F5B5;
+    --cream: #F5F7F0;
+    --orange: #FC9A44;
+    
+    /* Semantic colors (what each color is used for) */
+    --bg-color: var(--cream);
+    --text-color: var(--olive);
+    --accent: var(--mint);
+  }
+
+body {
+    font-family: "Comfortaa", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+
+}
+
+#timer{
+    font-family: "Spline Sans Mono", monospace;
+    font-size: 3rem;
+}
+
+button {
+    font-family: "Comfortaa", sans-serif;
+    border: none;
+
+}
+
+#start {
+    background-color: var(--green);
+    color: var(--olive);
+    padding: 0.5rem;
+}
+
+#stop {
+    background-color: var(--orange);
+    color: var(--olive);
+    padding: 0.5rem;
+}
+
+#save {
+    background-color: var(--mint);
+    color: var(--olive);
+    padding: 0.5rem;
+}
