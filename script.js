@@ -4,7 +4,8 @@ const stopButton = document.getElementById("stop");
 const resetButton = document.getElementById("reset");
 const saveButton = document.getElementById("save");
 const sessionToggleButton = document.getElementById("sessionToggle")
-const settingsToggleButton = document.getElementById("settingsToggle")
+const settingsOpenButton = document.getElementById("settingsOpen")
+const settingsCloseButton = document.getElementById("settingsClose")
 const sessionList = document.getElementById("sessionList");
 const settingsModal = document.getElementById("settingsModal")
 //settingsModal contents:
@@ -33,6 +34,7 @@ function startTimer(){
     }
     startButton.disabled = true;
     stopButton.disabled = false;
+    resetButton.disabled = false;
     //basically starts a loop that runs this function every 10ms
     //returns an id for the running loop that I catch in timerInterval for stopping it later
     timerInterval = setInterval(updateTimer,10);
@@ -52,6 +54,7 @@ function updateTimer(){
 function stopTimer(){
     startButton.disabled = false;
     stopButton.disabled=true;
+    resetButton.disabled=false;
     clearInterval(timerInterval);
     saveButton.removeAttribute("hidden");
     saveButton.disabled=false;
@@ -127,6 +130,7 @@ function resetTimer(){
     }
     startButton.disabled = false;
     stopButton.disabled=true;
+    resetButton.disabled = true;
     saveButton.setAttribute("hidden", "hidden");
 }
 
@@ -149,6 +153,7 @@ function displaySessions(){
     let bestSession = findBestTime();
     if(bestSession){
         let bestDiv = document.createElement("div");
+        bestDiv.id = "best"
         bestDiv.textContent = "Best: " + (isSimpleFormat ? formatTimerSimplified(bestSession.time) : formatTimer(bestSession.time));
         sessionList.appendChild(bestDiv);
     }
@@ -157,6 +162,7 @@ function displaySessions(){
         //index numbers can be kept track of in here because of JS' foreach bells and whistles
         function(session, index){
             let div = document.createElement("div");
+            div.className = "session-item";
             div.textContent = (isSimpleFormat ? formatTimerSimplified(session.time) : formatTimer(session.time)) + " - " + session.date;
             let deleteButton = document.createElement("button");
             deleteButton.innerHTML = "<span class=material-symbols-outlined> delete </span>";
@@ -240,15 +246,6 @@ function toggleSessions(){
     }
 }
 
-function toggleSettings(){
-    if(settingsModal.hasAttribute('hidden')){
-        settingsModal.removeAttribute("hidden");
-    } else
-    {
-        settingsModal.setAttribute("hidden", "hidden");
-    }
-}
-
 //best time can either be fastest or longest time depending on settings
 function findBestTime(){
     if(sessions.length == 0){
@@ -278,7 +275,8 @@ stopButton.addEventListener('click', stopTimer);
 resetButton.addEventListener('click', resetTimer);
 saveButton.addEventListener("click", saveSession);
 sessionToggleButton.addEventListener("click", toggleSessions);
-settingsToggleButton.addEventListener("click", toggleSettings);
+settingsOpenButton.addEventListener("click", () =>{settingsModal.removeAttribute("hidden")});
+settingsCloseButton.addEventListener("click", () =>{settingsModal.setAttribute("hidden", "hidden")})
 //settings panel event handlers:
 bestModeToggleButton.addEventListener("click", () => {
     isBestModeLonger = !isBestModeLonger;

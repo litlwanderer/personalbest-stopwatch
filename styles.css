@@ -6,6 +6,7 @@
 
 :root {
     /* Your color palette */
+    --pink: #F5C9C9;
     --olive: #4D4B39;
     --mint: #72FBE0;
     --green: #40F5B5;
@@ -19,41 +20,205 @@
   }
 
 body {
-    font-family: "Comfortaa", sans-serif;
+    font-family: "Klee One", sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     padding: 1rem;
     max-width: 600px;
     margin: 0 auto;
     text-align: center;
+}
 
+#timerLabel{
+    font-family: "Caveat", sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: -0.02em;
 }
 
 #timer{
-    font-family: "Spline Sans Mono", monospace;
+    font-variant-numeric: tabular-nums;
     font-size: 3rem;
+    margin: 1rem;
+}
+
+#best{
+    font-family: "Caveat", sans-serif;
+    font-size: 1.5rem;
+    padding: 1rem 0.6rem 0.2rem;
+    text-align: left;
+    margin-top: 2rem;
 }
 
 button {
-    font-family: "Comfortaa", sans-serif;
+    font-family: "Klee One", sans-serif;
+    font-size: 1rem;
     border: none;
-
+    padding: 0.2rem 0.5rem;
+    align-items: center;
+    border-radius: 0.5rem;
+    background-color: transparent;
+    vertical-align: middle;
+    color: var(--olive);
 }
 
-#start {
-    background-color: var(--green);
-    color: var(--olive);
-    padding: 0.5rem;
+button:disabled {
+    opacity: 0.3;
+    background-color: transparent;
 }
 
-#stop {
-    background-color: var(--orange);
-    color: var(--olive);
-    padding: 0.5rem;
+#start, #stop, #save, #reset {
+    border: 1.5px solid var(--olive);
+    background-color: transparent;
+    padding: 0.2rem 0.8rem 0.4rem;
 }
 
-#save {
-    background-color: var(--mint);
+#start:hover, #start:active {
+    background-color: rgba(114, 251, 224, 0.3);
+}
+#stop:hover, #stop:active {
+    background-color: rgba(252, 154, 68, 0.3);
+}
+#reset:hover, #reset:active {
+    background-color: rgba(245, 201, 201, 0.3);
+}
+#save:hover, #save:active {
+    background-color: rgba(64, 245, 181, 0.3);
+}
+
+.session-item {
+    font-family: "Klee One", sans-serif;
+    font-size: .9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.2rem 0.8rem;
+    background: rgba(255,255,255,0.5);
+    border-radius: 0.8rem;
+    border: 1px solid rgba(61,53,48,0.1);
+    vertical-align: middle;
+    padding: 0.6rem 0.8rem;
+}
+
+.session-item button {
+    width: 24px;
+    height: 24px;
+    line-height: 1;
+    padding: 0;
+}
+
+#sessionToggle {
+    font-size: 0.7rem;
+    margin: 1rem;
+}
+
+#settingsModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3);
+    padding-top: 5rem;
+    overflow-y: auto;
+}
+
+#settingsContent {
+    background-color: var(--cream);
+    margin: 2rem auto;
+    max-width: 400px;
+    border-radius: 1rem;
+    text-align: left;
+    position: relative;
+    padding: 2rem 2rem 2rem;
+}
+
+#settingsOpen {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+#settingsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+}
+
+#settingsContent button:not(#settingsClose):not(#confirmYes):not(#confirmNo) {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border: 1.5px solid var(--olive);
+    border-radius: 0.5rem;
+}
+
+#settingsContent button:not(#settingsClose):hover,
+#settingsContent button:not(#settingsClose):active {
+    background-color: rgba(61, 53, 48, 0.08);
+}
+
+#timerLabelInput {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1.5px solid var(--olive);
+    border-radius: 0.5rem;
+    font-family: "Klee One", sans-serif;
+    font-size: 1rem;
+    background-color: transparent;
     color: var(--olive);
-    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-color: var(--olive);
+    border-style: dashed;
+}
+
+#timerLabelInput:hover {
+    outline: none;
+    border-color: var(--olive);
+    border-style: solid;
+}
+
+#about {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1rem;
+    border-top: 1px solid rgba(61,53,48,0.15);
+    font-size: 1rem;
+    color: var(--olive);
+}
+
+h2{
+    font-family: "Caveat";
+    font-size: 2rem;
+}
+
+#hardReset {
+    color: #a84444;
+    border-color: #a84444 !important;
+    margin-top: 1rem;
+    width: 100% !important;
+}
+
+#hardReset:hover {
+    background-color: rgba(168, 68, 68, 0.1) !important;
+}
+
+#confirmModal {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(61,53,48,0.15);
+}
+
+#confirmButtons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+}
+
+#confirmYes, #confirmNo {
+    flex: 0.8;
+    border: 1.5px solid var(--olive);
+    border-radius: 0.5rem;
 }
