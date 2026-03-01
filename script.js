@@ -3,6 +3,7 @@ const startButton = document.getElementById("start");
 const stopButton = document.getElementById("stop");
 const resetButton = document.getElementById("reset");
 const saveButton = document.getElementById("save");
+const darkModeToggle = document.getElementById("darkModeToggle");
 const sessionToggleButton = document.getElementById("sessionToggle")
 const settingsOpenButton = document.getElementById("settingsOpen")
 const settingsCloseButton = document.getElementById("settingsClose")
@@ -220,6 +221,12 @@ function loadPrevSessions(){
         timerLabel.textContent = savedTimerLabel
     }
 
+    let savedDarkMode = localStorage.getItem("isDarkMode");
+    if (savedDarkMode === "true") {
+        document.body.classList.add("dark-mode");
+        darkModeToggle.innerHTML = '<span class="material-symbols-outlined">dark_mode</span>';
+    }
+
     //load sessions
     let savedSessions = localStorage.getItem("sessions");
     if (savedSessions) {
@@ -269,11 +276,21 @@ function findBestTime(){
     return best;
 }
 
+function toggleDarkMode(){
+    document.body.classList.toggle("dark-mode");
+    let isDark = document.body.classList.contains("dark-mode");
+    darkModeToggle.innerHTML = isDark 
+        ? '<span class="material-symbols-outlined">dark_mode</span>'
+        : '<span class="material-symbols-outlined">light_mode</span>';
+    localStorage.setItem("isDarkMode", isDark);
+}
+
 document.addEventListener('DOMContentLoaded', loadPrevSessions);
 startButton.addEventListener('click', startTimer);
 stopButton.addEventListener('click', stopTimer);
 resetButton.addEventListener('click', resetTimer);
 saveButton.addEventListener("click", saveSession);
+darkModeToggle.addEventListener("click",toggleDarkMode);
 sessionToggleButton.addEventListener("click", toggleSessions);
 settingsOpenButton.addEventListener("click", () =>{settingsModal.removeAttribute("hidden")});
 settingsCloseButton.addEventListener("click", () =>{settingsModal.setAttribute("hidden", "hidden")})
@@ -333,13 +350,8 @@ confirmNo.addEventListener('click', () => {
 **MEGA TO-DO LIST:**
 
 **Functionality To-Do:**
-1. Settings panel contents:
-   - Time format toggle (detailed/simplified)
-   - Dark/light mode toggle
-   - Reset all preferences button
-2. Implement all those toggles + localStorage for each
-3. CSS styling with color palette
-4. Dark mode CSS
+Testing on Mobile
+Animation
 
 **Cat Feature To-Do:**
 5. Draw cats (32 drawings):
