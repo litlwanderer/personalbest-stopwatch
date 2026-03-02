@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>Personal Best Stopwatch</title>
     <link href = "styles.css" rel="stylesheet">
@@ -14,6 +15,15 @@
 
 <body>
     <h1 id="timerLabel">Stopwatch</h1>
+    <div id="topButtons">
+        <button id="darkModeToggle">
+            <span class="material-symbols-outlined">light_mode</span>
+        </button>
+        <button id="settingsOpen">
+            <span class="material-symbols-outlined">more_vert</span>
+        </button>
+    </div>
+
     <div id="timer"> 
         0s
     </div>
@@ -22,18 +32,13 @@
         <button id="start">Start</button>
         <button id="stop" disabled>Stop</button>
         <button id="reset" disabled>Reset</button>
-        <button id="save" hidden>Save</button>
+        <button id="save">Save</button>
     </div>
     <div id ="sessionList" hidden>
     </div>
     <button id="sessionToggle" hidden>▲</button>
 
-    <button id="darkModeToggle">
-        <span class="material-symbols-outlined">light_mode</span>
-    </button>
-    <button id="settingsOpen">
-        <span class="material-symbols-outlined">more_vert</span>
-    </button>
+
     <div id="settingsModal" hidden>
         <div id="settingsContent">
             <div id="settingsHeader">

@@ -19,6 +19,7 @@ body {
     max-width: 600px;
     margin: 0 auto;
     text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /*dark mode colour palette*/
@@ -34,16 +35,28 @@ body.dark-mode #settingsContent {
     background-color: #2F3F52;
 }
 
+#topButtons {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.5rem;
+}
+
 #timerLabel{
     font-family: "Caveat", sans-serif;
     font-size: 2.5rem;
     letter-spacing: -0.02em;
+    margin: 2rem;
+    margin-top: 4rem;
 }
 
 #timer{
     font-variant-numeric: tabular-nums;
     font-size: 3rem;
     margin: 1rem;
+}
+
+#timer.resetting {
+    animation: timerReset 0.3s ease;
 }
 
 #best{
@@ -64,6 +77,11 @@ button {
     background-color: transparent;
     vertical-align: middle;
     color: var(--text-color);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+button:not(:disabled):not(#settingsClose):not(#darkModeToggle):not(#settingsOpen):hover {
+    transform: scale(1.02);
 }
 
 button:disabled {
@@ -75,6 +93,22 @@ button:disabled {
     border: 1.5px solid var(--accent);
     background-color: transparent;
     padding: 0.2rem 0.8rem 0.4rem;
+}
+
+#save {
+    opacity: 0;
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    border: none;
+    transition: opacity 0.2s ease, width 0.2s ease, padding 0.2s ease;
+}
+
+#save.visible {
+    opacity: 1;
+    width: 4rem;
+    padding: 0.2rem 0.8rem 0.4rem;
+    border: 1.5px solid var(--accent);
 }
 
 #start:hover, #start:active {
@@ -103,6 +137,28 @@ body.dark-mode #save:hover, body.dark-mode #save:active {
     background-color: rgba(64, 245, 181, 0.15);
 }
 
+#sessionList {
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.4s ease;
+    opacity: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+#sessionList.disappearing {
+    animation: listDisappear 0.3s ease forwards;
+}
+
+#sessionList::-webkit-scrollbar {
+    display: none;
+}
+
+#sessionList.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
 .session-item {
     font-family: "Klee One", sans-serif;
     font-size: .9rem;
@@ -115,6 +171,10 @@ body.dark-mode #save:hover, body.dark-mode #save:active {
     border: 1px solid rgba(61,53,48,0.1);
     vertical-align: middle;
     padding: 0.6rem 0.8rem;
+}
+
+.session-item.new {
+    animation: sessionFadeIn 0.3s ease;
 }
 
 .session-item button {
@@ -135,30 +195,32 @@ body.dark-mode #save:hover, body.dark-mode #save:active {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.3);
-    padding-top: 5rem;
+    background-color: rgba(0,0,0,0.4);
     overflow-y: auto;
+    padding-top: 0;
+    transition: padding-top 0.3s ease;
+}
+
+#settingsModal:has(#timerLabelInput:focus) {
+    padding-top: 8rem;
+}
+
+#settingsModal.animating {
+    animation: slideIn 0.25s ease forwards;
+}
+
+#settingsModal.closing {
+    animation: fadeOut 0.25s ease forwards;
 }
 
 #settingsContent {
     background-color: var(--bg-color);
-    margin: 2rem auto;
+    margin: 2rem 1rem;
     max-width: 400px;
     border-radius: 1rem;
     text-align: left;
     position: relative;
     padding: 2rem 2rem 2rem;
-}
-
-#settingsOpen {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-}
-#darkModeToggle {
-    position: absolute;
-    top: 1rem;
-    right: 3rem;
 }
 
 #settingsHeader {
@@ -249,4 +311,47 @@ h2{
     flex: 0.8;
     border: 1.5px solid var(--accent);
     border-radius: 0.5rem;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes timerReset {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes sessionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes listDisappear {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(10px); }
 }

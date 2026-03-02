@@ -39,7 +39,7 @@ function startTimer(){
     //basically starts a loop that runs this function every 10ms
     //returns an id for the running loop that I catch in timerInterval for stopping it later
     timerInterval = setInterval(updateTimer,10);
-    saveButton.setAttribute("hidden", "hidden");
+    saveButton.classList.remove("visible");
 }
 
 function updateTimer(){
@@ -57,7 +57,7 @@ function stopTimer(){
     stopButton.disabled=true;
     resetButton.disabled=false;
     clearInterval(timerInterval);
-    saveButton.removeAttribute("hidden");
+    saveButton.classList.add("visible"); 
     saveButton.disabled=false;
 }
 
@@ -97,8 +97,9 @@ function formatTimerSimplified(elapsedTime){
             result += " " + seconds + (seconds === 1 ? " second" : " seconds");
         }
     } else {
-        result += seconds + (seconds===1 ? " second" : " seconds")
-    }
+        const decimal = (elapsedTime / 1000).toFixed(1);
+        result += decimal + (decimal === "1.0" ? " second" : " seconds");
+    }    
 
     return result;
 }
@@ -122,6 +123,10 @@ function formatTimerCompact(elapsedTime) {
 
 function resetTimer(){
     clearInterval(timerInterval);
+    timer.classList.add("resetting");
+    setTimeout(() => {
+        timer.classList.remove("resetting");
+    }, 300);
     elapsedTime = 0;
     if (isSimpleFormat){
         timer.textContent = formatTimerCompact(elapsedTime);
@@ -132,7 +137,7 @@ function resetTimer(){
     startButton.disabled = false;
     stopButton.disabled=true;
     resetButton.disabled = true;
-    saveButton.setAttribute("hidden", "hidden");
+    saveButton.classList.remove("visible");
 }
 
 function saveSession(){
@@ -159,11 +164,13 @@ function displaySessions(){
         sessionList.appendChild(bestDiv);
     }
 
-    sessions.forEach(
-        //index numbers can be kept track of in here because of JS' foreach bells and whistles
+    sessions.slice().reverse().forEach(        //index numbers can be kept track of in here because of JS' foreach bells and whistles
         function(session, index){
             let div = document.createElement("div");
             div.className = "session-item";
+            if (index === sessions.length - 1) {
+                div.classList.add("new");
+            }
             div.textContent = (isSimpleFormat ? formatTimerSimplified(session.time) : formatTimer(session.time)) + " - " + session.date;
             let deleteButton = document.createElement("button");
             deleteButton.innerHTML = "<span class=material-symbols-outlined> delete </span>";
@@ -236,19 +243,28 @@ function loadPrevSessions(){
 }
 
 function deleteSession(index){
-    //remove 1 element from the sessions array
-    sessions.splice(index,1);
-    localStorage.setItem("sessions", JSON.stringify(sessions));
-    displaySessions()
+    if (sessions.length === 1) {
+        // last session! animate something first
+        sessionList.classList.add("disappearing");
+        setTimeout(() => {
+            sessions.splice(index,1);
+            localStorage.setItem("sessions", JSON.stringify(sessions));
+            displaySessions();
+            sessionList.classList.remove("disappearing");
+        }, 300);
+    } else {
+        sessions.splice(index,1);
+        localStorage.setItem("sessions", JSON.stringify(sessions));
+        displaySessions();
+    }
 }
 
 function toggleSessions(){
-    if(sessionList.hasAttribute('hidden')){
-        sessionList.removeAttribute("hidden");
+    if(sessionList.classList.contains('collapsed')){
+        sessionList.classList.remove('collapsed');
         sessionToggleButton.innerHTML = "▲"
-    } else
-    {
-        sessionList.setAttribute("hidden", "hidden");
+    } else {
+        sessionList.classList.add('collapsed');
         sessionToggleButton.innerHTML = "▼"
     }
 }
@@ -292,8 +308,20 @@ resetButton.addEventListener('click', resetTimer);
 saveButton.addEventListener("click", saveSession);
 darkModeToggle.addEventListener("click",toggleDarkMode);
 sessionToggleButton.addEventListener("click", toggleSessions);
-settingsOpenButton.addEventListener("click", () =>{settingsModal.removeAttribute("hidden")});
-settingsCloseButton.addEventListener("click", () =>{settingsModal.setAttribute("hidden", "hidden")})
+settingsOpenButton.addEventListener("click", () =>{
+    settingsModal.removeAttribute("hidden");
+    settingsModal.classList.add("animating");
+    setTimeout(() => {
+        settingsModal.classList.remove("animating");
+    }, 250);
+});
+settingsCloseButton.addEventListener("click", () =>{
+    settingsModal.classList.add("closing");
+    setTimeout(() => {
+        settingsModal.setAttribute("hidden", "hidden");
+        settingsModal.classList.remove("closing");
+    }, 250);
+})
 //settings panel event handlers:
 bestModeToggleButton.addEventListener("click", () => {
     isBestModeLonger = !isBestModeLonger;
