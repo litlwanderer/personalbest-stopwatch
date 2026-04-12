@@ -1,7 +1,6 @@
 *{
     box-sizing: border-box;
     margin: 0;
-    padding: 0;
 }
 
 :root {
@@ -12,7 +11,7 @@
   }
 
 body {
-    font-family: "Klee One", sans-serif;
+    font-family: "TW Cen MT", sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     padding: 1rem;
@@ -22,17 +21,20 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/*dark mode colour palette*/
+/* mode colour palette*/
 body.dark-mode {
     --bg-color: #283647;
     --text-color: #E8E4DC;
     --accent: #C45674;
 }
 body.dark-mode .session-item {
-    background: rgba(47, 63, 82, 0.8);
+    background: rgba(47, 63, 82, 0.9);
 }
 body.dark-mode #settingsContent {
     background-color: #2F3F52;
+}
+body.dark-mode #sleepCatPicture{
+    filter: brightness(0.8);
 }
 
 #topButtons {
@@ -43,10 +45,10 @@ body.dark-mode #settingsContent {
 
 #timerLabel{
     font-family: "Caveat", sans-serif;
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     letter-spacing: -0.02em;
-    margin: 2rem;
-    margin-top: 4rem;
+    margin: 1rem;
+    margin-top: 2rem;
 }
 
 #timer{
@@ -68,7 +70,7 @@ body.dark-mode #settingsContent {
 }
 
 button {
-    font-family: "Klee One", sans-serif;
+    font-family: "TW Cen MT", sans-serif;
     font-size: 1rem;
     border: none;
     padding: 0.2rem 0.5rem;
@@ -81,7 +83,7 @@ button {
 }
 
 button:not(:disabled):not(#settingsClose):not(#darkModeToggle):not(#settingsOpen):hover {
-    transform: scale(1.02);
+    transform: scale(1.05);
 }
 
 button:disabled {
@@ -92,7 +94,7 @@ button:disabled {
 #start, #stop, #save, #reset {
     border: 1.5px solid var(--accent);
     background-color: transparent;
-    padding: 0.2rem 0.8rem 0.4rem;
+    padding: 0.3rem 0.9rem;
 }
 
 #save {
@@ -107,7 +109,7 @@ button:disabled {
 #save.visible {
     opacity: 1;
     width: 4rem;
-    padding: 0.2rem 0.8rem 0.4rem;
+    padding: 0.3rem 0.9rem;
     border: 1.5px solid var(--accent);
 }
 
@@ -144,6 +146,9 @@ body.dark-mode #save:hover, body.dark-mode #save:active {
     opacity: 1;
     overflow-y: auto;
     scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
 }
 
 #sessionList.disappearing {
@@ -160,15 +165,14 @@ body.dark-mode #save:hover, body.dark-mode #save:active {
 }
 
 .session-item {
-    font-family: "Klee One", sans-serif;
     font-size: .9rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.2rem 0.8rem;
-    background: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.9);
     border-radius: 0.8rem;
-    border: 1px solid rgba(61,53,48,0.1);
+    border: 1px outset rgb(from var(--accent) r g b / 20%);
     vertical-align: middle;
     padding: 0.6rem 0.8rem;
 }
@@ -215,8 +219,9 @@ body.dark-mode #save:hover, body.dark-mode #save:active {
 
 #settingsContent {
     background-color: var(--bg-color);
-    margin: 2rem 1rem;
-    max-width: 400px;
+    margin: 2rem auto;
+    width: 400px;
+    max-width: 80%;
     border-radius: 1rem;
     text-align: left;
     position: relative;
@@ -228,7 +233,6 @@ body.dark-mode #save:hover, body.dark-mode #save:active {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    padding: 0 1rem;
 }
 
 #settingsContent button:not(#settingsClose):not(#confirmYes):not(#confirmNo) {
@@ -255,7 +259,7 @@ body.dark-mode #settingsContent button:not(#settingsClose):active {
     padding: 0.6rem 0.8rem;
     border: 1.5px solid var(--accent);
     border-radius: 0.5rem;
-    font-family: "Klee One", sans-serif;
+    font-family: "TW Cen MT", sans-serif;
     font-size: 1rem;
     background-color: transparent;
     color: var(--text-color);
@@ -274,7 +278,7 @@ body.dark-mode #settingsContent button:not(#settingsClose):active {
 #about {
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
-    padding: 1rem 1rem;
+    padding: 1rem 0rem;
     border-top: 1px solid rgba(61,53,48,0.15);
     font-size: 1rem;
     color: var(--text-color);
@@ -311,6 +315,38 @@ h2{
     flex: 0.8;
     border: 1.5px solid var(--accent);
     border-radius: 0.5rem;
+}
+
+#sleepCatPicture {
+    text-align: center;
+    margin-top: 2rem;
+    width: 300px;
+}
+
+@media (min-width: 600px) {
+    #sleepCatPicture {
+        position: fixed;
+        bottom: 1rem;
+        left: 1rem;
+        width: 350px;
+        z-index: -1;
+    }
+}
+
+#runCatPicture {
+    position: fixed;
+    bottom: 1rem;
+    width: 300px;
+    z-index: -1;
+}
+
+@media (min-width: 600px) {
+    #runCatPicture {
+        position: fixed;
+        bottom: 1rem;
+        width: 350px;
+        z-index: -1;
+    }
 }
 
 @keyframes slideIn {

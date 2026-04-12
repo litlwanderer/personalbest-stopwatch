@@ -4,23 +4,29 @@ const stopButton = document.getElementById("stop");
 const resetButton = document.getElementById("reset");
 const saveButton = document.getElementById("save");
 const darkModeToggle = document.getElementById("darkModeToggle");
-const sessionToggleButton = document.getElementById("sessionToggle")
-const settingsOpenButton = document.getElementById("settingsOpen")
-const settingsCloseButton = document.getElementById("settingsClose")
+const sessionToggleButton = document.getElementById("sessionToggle");
+const settingsOpenButton = document.getElementById("settingsOpen");
+const settingsCloseButton = document.getElementById("settingsClose");
 const sessionList = document.getElementById("sessionList");
-const settingsModal = document.getElementById("settingsModal")
+const settingsModal = document.getElementById("settingsModal");
+//cat variables
+const sleepCatPicture = document.getElementById("sleepCatPicture");
+const runCatPicture = document.getElementById("runCatPicture");
+const catIDs = ["0","1","2","3","4"];
+let currentCat = catIDs[Math.floor(Math.random() * catIDs.length)];
+let sleepFrame = 0;
 //settingsModal contents:
-const bestModeToggleButton = document.getElementById("bestModeToggle")
-const timeFormatToggleButton = document.getElementById("timeFormatToggle")
+const bestModeToggleButton = document.getElementById("bestModeToggle");
+const timeFormatToggleButton = document.getElementById("timeFormatToggle");
 const timerLabelInput = document.getElementById("timerLabelInput");
 const timerLabel = document.getElementById("timerLabel");
 const hardResetButton = document.getElementById("hardReset");
 
-let startTime = 0
-let elapsedTime = 0
-let sessions = []
-let isBestModeLonger = true
-let isSimpleFormat = true
+let startTime = 0;
+let elapsedTime = 0;
+let sessions = [];
+let isBestModeLonger = true;
+let isSimpleFormat = true;
 
 function startTimer(){
     //condition allows timer to resume if paused, not restart
@@ -31,7 +37,7 @@ function startTimer(){
         //this accounts for time elapsed during the pause...
         //although if my math isn't mathing today and you ask me, I can't explain 100% WHY it works
         //which is embarrassing and not good - I know, okayyy?? moving on  ヽ(Д´)ノ`
-        startTime = Date.now() - elapsedTime
+        startTime = Date.now() - elapsedTime;
     }
     startButton.disabled = true;
     stopButton.disabled = false;
@@ -48,7 +54,22 @@ function updateTimer(){
         timer.textContent = formatTimerCompact(elapsedTime);
     } else
     {
-        timer.textContent = formatTimer(elapsedTime)
+        timer.textContent = formatTimer(elapsedTime);
+    }
+
+    //cat sleepiness progression checks. Yes, dirty and repetitive. Whatever.
+    //30, 60 and 90 minutes respectively
+    if (elapsedTime > 30 * 60 * 1000 && sleepFrame === 0) {
+        sleepFrame = 1;
+        sleepCatPicture.src = `sleepcat/sleepcat_${currentCat}_${sleepFrame}.png`;
+    }
+    if (elapsedTime > 60 * 60 * 1000 && sleepFrame === 1) {
+        sleepFrame = 2;
+        sleepCatPicture.src = `sleepcat/sleepcat_${currentCat}_${sleepFrame}.png`;
+    }
+    if (elapsedTime > 90 * 60 * 1000 && sleepFrame === 2) {
+        sleepFrame = 3;
+        sleepCatPicture.src = `sleepcat/sleepcat_${currentCat}_${sleepFrame}.png`;
     }
 }
 
@@ -65,7 +86,7 @@ function stopTimer(){
 //credit to https://github.com/capwan/Stopwatch_timer/blob/main/script.js where I copy/pasted it from
 function formatTimer(elapsedTime){
     const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
-    const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60))
+    const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
     const mseconds = Math.floor((elapsedTime % 1000) / 10);
     return (
@@ -81,7 +102,7 @@ function formatTimer(elapsedTime){
 //credit to claude 
 function formatTimerSimplified(elapsedTime){
     const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
-    const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60))
+    const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
     let result="";
     
@@ -132,12 +153,17 @@ function resetTimer(){
         timer.textContent = formatTimerCompact(elapsedTime);
     } else
     {
-        timer.textContent = formatTimer(elapsedTime)
+        timer.textContent = formatTimer(elapsedTime);
     }
     startButton.disabled = false;
     stopButton.disabled=true;
     resetButton.disabled = true;
     saveButton.classList.remove("visible");
+    if (isBestModeLonger)
+    {
+        sleepFrame = 0;
+        sleepCatPicture.src = `sleepcat/sleepcat_${currentCat}_${sleepFrame}.png`;
+    }
 }
 
 function saveSession(){
@@ -149,7 +175,7 @@ function saveSession(){
     displaySessions();
     saveButton.disabled=true;
     startButton.disabled=true;
-    localStorage.setItem("sessions", JSON.stringify(sessions))
+    localStorage.setItem("sessions", JSON.stringify(sessions));
 }
 
 //refresh session list
@@ -194,24 +220,24 @@ function displaySessions(){
 
 function loadPrevSessions(){
     //load user setting preferences
-    let savedBestMode = localStorage.getItem("isBestModeLonger")
+    let savedBestMode = localStorage.getItem("isBestModeLonger");
     if (savedBestMode !== null)
         { //convert to bool
-            isBestModeLonger = (savedBestMode === "true")
+            isBestModeLonger = (savedBestMode === "true");
         }
 
     if (isBestModeLonger)
     {
-        bestModeToggleButton.innerHTML = "Best: Longer"
+        bestModeToggleButton.innerHTML = "Best: Longer";
     } else
     {
-        bestModeToggleButton.innerHTML = "Best: Faster"
+        bestModeToggleButton.innerHTML = "Best: Faster";
     };
 
-    let savedTimeFormat = localStorage.getItem("isSimpleFormat")
+    let savedTimeFormat = localStorage.getItem("isSimpleFormat");
     if (savedTimeFormat !== null)
         { //convert to bool
-            isSimpleFormat = (savedTimeFormat === "true")
+            isSimpleFormat = (savedTimeFormat === "true");
         }
     if (isSimpleFormat)
     {
@@ -240,6 +266,9 @@ function loadPrevSessions(){
         sessions = JSON.parse(savedSessions);
         displaySessions();
     }
+
+    //show cat - tied to best mode
+    updateCatMode()
 }
 
 function deleteSession(index){
@@ -301,6 +330,105 @@ function toggleDarkMode(){
     localStorage.setItem("isDarkMode", isDark);
 }
 
+function updateCatMode() {
+    if (isBestModeLonger) {
+        // hide run cat, show sleepcat
+        sleepCatPicture.removeAttribute("hidden");
+        runCatPicture.setAttribute("hidden", "hidden");
+        sleepCatPicture.src = `sleepcat/sleepcat_${currentCat}_0.png`;
+        //end any runcat function scheduled to run
+        clearTimeout(runCatTimeOut);
+    } else {
+        // hide sleepcat, show runcat
+        sleepCatPicture.setAttribute("hidden", "hidden");
+        runCatPicture.removeAttribute("hidden")
+        runCatPicture.src = `runcat/runcat_${currentCat}_0.png`;
+        //start the run cat animation handler function after a random delay
+        setTimeout(runCat, randomMilliseconds(10,10))
+    }
+}
+
+//running cat animation handler.
+//todo: There's a bunch of hardcoded numbers in here and randommilliseconds is still too small, it's debug
+function runCat() {
+    //initialise and actually show the frame
+    let currentRunFrameNumber = 0;
+    runCatPicture.removeAttribute("hidden");
+
+    const screenwidth = window.innerWidth //in px
+    //note below: the multiplier is to make sure that the cat actually goes off screen when needed.
+    //a bit messy and stupid but whatever
+    const catwidth = runCatPicture.offsetWidth*2; //in px
+    const speed = 400; //in px per second
+    //as we know, distance/speed = time, so this is the time, in seconds,
+    //of "how long it takes for cat to move all the way from left to right"
+    const animationDuration = (screenwidth+catwidth*2)/speed;
+    
+    let frameCycleRate = 150; //in milliseconds
+    //pick random direction
+    const isGoingRight = Math.random() > 0.5;
+
+    //set starting pos and flip image if going left
+    if (isGoingRight){
+        runCatPicture.style.left = -catwidth+"px"
+        runCatPicture.style.transform = "scaleX(1)"
+    } else{
+        runCatPicture.style.left = screenwidth + "px"
+        runCatPicture.style.transform = "scaleX(-1)"
+    }
+
+    //init done,there are 3 things we now need to do: 
+    //1. cycle frames
+    //2. move the pic from left of screen to right of screen
+    //3. hide when done
+
+    //1. start the frame cycle
+    let frameCycleInterval = setInterval(() => {
+        currentRunFrameNumber = (currentRunFrameNumber+1) %4
+        //Note on above: 4 is the total number of frames so it wraps.
+        //bit of a magic number; change this if the total number of frames per loop changes
+        runCatPicture.src = `runcat/runcat_${currentCat}_${currentRunFrameNumber}.png`;
+    }, frameCycleRate)
+
+    //2. start the css transition (easing animation, but not eased, it's linear)
+    runCatPicture.style.transition = `left ${animationDuration}s linear`;
+    //and in 50 ms, actually move the cat's x position to either the left or the right edge
+    //of the screen, as appropriate.
+    //why 50ms? because if u do it immediately after setting the transition,
+    //js may just teleport the cat
+    setTimeout(()=>{
+        if (isGoingRight){
+            runCatPicture.style.left = screenwidth + catwidth + "px"
+        } else {
+            runCatPicture.style.left = -catwidth + "px"
+        }
+    },50);
+
+    //3. hide the cat once it's finished moving all the way
+    runCatPicture.addEventListener("transitionend", (event) => {
+        if (event.propertyName !== "left") return;
+        //stop the frame cycle
+        clearInterval(frameCycleInterval);
+        //hide the cat
+        runCatPicture.setAttribute("hidden", "hidden")
+        //stop the left/right transition animation
+        runCatPicture.style.transition = "none"
+
+        //schedule the next run, by calling this whole function again
+        //in 50-80 seconds
+        //note: a bit hardcoded, need to fix these magic numbers later
+        if (!isBestModeLonger){
+            runCatTimeOut=setTimeout(runCat, randomMilliseconds(10000,10000))
+        }
+    }, {once: true}); //ie: the event listener autoremoves itself after firing once
+}
+
+//returns random milliseconds from min to max
+//not sure if it's inclusive or exclusive. Whatevs
+function randomMilliseconds(min,max){
+    return Math.floor(Math.random()*(max-min+1))+min;
+}
+
 document.addEventListener('DOMContentLoaded', loadPrevSessions);
 startButton.addEventListener('click', startTimer);
 stopButton.addEventListener('click', stopTimer);
@@ -333,6 +461,7 @@ bestModeToggleButton.addEventListener("click", () => {
         bestModeToggleButton.innerHTML = "Best: Faster"
     };
     localStorage.setItem("isBestModeLonger", isBestModeLonger);
+    updateCatMode()
     //call displaysessions again to refresh
     displaySessions();
 });
@@ -372,25 +501,3 @@ confirmNo.addEventListener('click', () => {
     confirmModal.setAttribute("hidden", "hidden");
 });
 //end hard rest button
-
-
-/*
-**MEGA TO-DO LIST:**
-
-**Functionality To-Do:**
-Testing on Mobile
-Animation
-
-**Cat Feature To-Do:**
-5. Draw cats (32 drawings):
-   - 4 time-of-day cats (morning/afternoon/evening/night)
-   - Each cat needs:
-     * 4 frames of progressive sleepiness (for "longer is better" mode)
-     * 4 frames of running animation (for "shorter is better" mode)
-   - Bonus: rare surprise cat (stretch goal) - maybe a frog?
-6. Implement cat system:
-   - Pick cat based on time of day at page load
-   - Animate sleepiness progression in "longer" mode
-   - Animate dashing across screen in "shorter" mode
-   - Random rare cat appearance
-*/
