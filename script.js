@@ -344,7 +344,7 @@ function updateCatMode() {
         runCatPicture.removeAttribute("hidden")
         runCatPicture.src = `runcat/runcat_${currentCat}_0.png`;
         //start the run cat animation handler function after a random delay
-        setTimeout(runCat, randomMilliseconds(10,10))
+        setTimeout(runCat, randomMilliseconds(10000,20000))
     }
 }
 
@@ -418,7 +418,7 @@ function runCat() {
         //in 50-80 seconds
         //note: a bit hardcoded, need to fix these magic numbers later
         if (!isBestModeLonger){
-            runCatTimeOut=setTimeout(runCat, randomMilliseconds(10000,10000))
+            runCatTimeOut=setTimeout(runCat, randomMilliseconds(50000,80000))
         }
     }, {once: true}); //ie: the event listener autoremoves itself after firing once
 }
