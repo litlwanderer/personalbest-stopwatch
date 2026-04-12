@@ -500,4 +500,4 @@ confirmYes.addEventListener('click', () => {
 confirmNo.addEventListener('click', () => {
     confirmModal.setAttribute("hidden", "hidden");
 });
-//end hard rest button
+//end hard reset button

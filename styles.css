@@ -11,7 +11,7 @@
   }
 
 body {
-    font-family: "TW Cen MT", sans-serif;
+    font-family: "TW Cen MT", "Jost", sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     padding: 1rem;
@@ -70,7 +70,7 @@ body.dark-mode #sleepCatPicture{
 }
 
 button {
-    font-family: "TW Cen MT", sans-serif;
+    font-family: "TW Cen MT", "Jost", sans-serif;
     font-size: 1rem;
     border: none;
     padding: 0.2rem 0.5rem;
@@ -259,7 +259,7 @@ body.dark-mode #settingsContent button:not(#settingsClose):active {
     padding: 0.6rem 0.8rem;
     border: 1.5px solid var(--accent);
     border-radius: 0.5rem;
-    font-family: "TW Cen MT", sans-serif;
+    font-family: "TW Cen MT", "Jost", sans-serif;
     font-size: 1rem;
     background-color: transparent;
     color: var(--text-color);
@@ -321,6 +321,7 @@ h2{
     text-align: center;
     margin-top: 2rem;
     width: 300px;
+    z-index: -1;
 }
 
 @media (min-width: 600px) {
