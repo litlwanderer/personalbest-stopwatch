@@ -86,6 +86,16 @@ button:not(:disabled):not(#settingsClose):not(#darkModeToggle):not(#settingsOpen
     transform: scale(1.05);
 }
 
+@media (hover: none) {
+    button:hover {
+        transform: none !important;
+        background-color: transparent !important;
+    }
+    button:active {
+        transform: scale(0.95);
+    }
+}
+
 button:disabled {
     opacity: 0.3;
     background-color: transparent;
@@ -205,8 +215,16 @@ body.dark-mode #save:hover, body.dark-mode #save:active {
     transition: padding-top 0.3s ease;
 }
 
+/* Sliding up animation when clicking the timerlabelinput */
 #settingsModal:has(#timerLabelInput:focus) {
     padding-top: 8rem;
+}
+
+/* But don't do the sliding-up animation on small screens */
+@media (max-width: 600px) {
+    #settingsModal:has(#timerLabelInput:focus) {
+        padding-top: 0;
+    }
 }
 
 #settingsModal.animating {
@@ -318,6 +336,7 @@ h2{
 }
 
 #sleepCatPicture {
+    position: relative;
     text-align: center;
     margin-top: 2rem;
     width: 300px;

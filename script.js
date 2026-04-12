@@ -339,9 +339,9 @@ function updateCatMode() {
         //end any runcat function scheduled to run
         clearTimeout(runCatTimeOut);
     } else {
-        // hide sleepcat, show runcat
+        // hide sleepcat, hide runcat
         sleepCatPicture.setAttribute("hidden", "hidden");
-        runCatPicture.removeAttribute("hidden")
+        runCatPicture.setAttribute("hidden", "hidden");
         runCatPicture.src = `runcat/runcat_${currentCat}_0.png`;
         //start the run cat animation handler function after a random delay
         setTimeout(runCat, randomMilliseconds(10000,20000))
