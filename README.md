@@ -1,2 +1,2 @@
 # personalbest-stopwatch
-A stopwatch to keep track of your personal best time.
+A stopwatch to keep track of personal best time in... anything really!
