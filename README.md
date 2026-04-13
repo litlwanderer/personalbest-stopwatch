@@ -57,17 +57,15 @@ My favourite cats are the fat grey one and the tiny one who rolls.
 This is my first-ever HTML/CSS/JS project! I mainly built it because I wanted to try out GitHub Pages.
 
 I expected to enjoy the fun, fluffy parts of development like the CSS... but it immediately became clear that the design choices which look good in my head are actually terrible IRL, and I think I ended up leaning on AI on that part of the project more than anywhere else >\_<
-
 On the plus side, I learnt enough CSS to fix a couple of things myself, experiment with the overall colour scheme, and learn how mobile-responsive pages can be made using @media queries.
 
 Overall I learnt a lot about front-end basics, especially JavaScript; I think JavaScript is my new favourite ~~language~~ script! setInterval()/clearInterval() are my new favourite functions.
-
-
 The only thing is that the loosely-typed-ness of JS can lead to strange, difficult to trace bugs. TypeScript may be something for me to explore in the future.
 
 LocalStorage was something new as well; turns out that browsers have many different ways to store data client-side.
-
 I used DevTools a lot for testing and debugging (breakpoints, testing different layouts, etc) and also got to practice using Git, which is always a plus.
+
+Handling the changes between running cat mode <-> sleeping cat mode was probably the most challenging thing in the whole project. I spent a lot of effort testing this feature, but there may be some persistent bugs that slipped through leading to strange behaviour for the running cat. Please let me know if you find any new ones! I *will* try to fix them (... although success not guaranteed haha)
 
 
 
@@ -92,6 +90,8 @@ New things I might explore next:
 ### Future Ideas and Known Bugs
 
 * There is an occasional bug where runcat() is called and immediately ends, meaning that the cat-running-across-the-screen animation doesn't happen at all. I checked this out in DevTools and a theory is that the transitionend listener (which should fire when the cat is done running across the screen) fires in response to something else. Since the cat is supposed to appear randomly anyway and this bug doesn't do anything critical, I left that in for now; the problem would be great to pinpoint one day though
+* If the cat pictures don't load in time (due to network latency) the cat will just slide across the screen instead of cycling frames to run properly
+* Cat-running frame cycling sometimes seems to go too fast - haven't really looked at this one closely - could be latency, could be an un-cleared leftover frame cycling interval overlapping on the current one
 * Find out whether it's possible to use service workers to make the application work offline
 * Improve on the CSS for a nicer, less vibe-coded feel
 * Add a pomodoro mode
