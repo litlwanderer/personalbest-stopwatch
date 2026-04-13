@@ -91,9 +91,6 @@ button:not(:disabled):not(#settingsClose):not(#darkModeToggle):not(#settingsOpen
         transform: none !important;
         background-color: transparent !important;
     }
-    button:active {
-        transform: scale(0.95);
-    }
 }
 
 button:disabled {
