@@ -28,6 +28,10 @@ let sessions = [];
 let isBestModeLonger = true;
 let isSimpleFormat = true;
 
+//runcat variables
+let runCatTimeOut
+let frameCycleInterval
+
 function startTimer(){
     //condition allows timer to resume if paused, not restart
     if (elapsedTime==0){
@@ -336,20 +340,32 @@ function updateCatMode() {
         sleepCatPicture.removeAttribute("hidden");
         runCatPicture.setAttribute("hidden", "hidden");
         sleepCatPicture.src = `sleepcat/sleepcat_${currentCat}_0.png`;
-        //end any runcat function scheduled to run
-        clearTimeout(runCatTimeOut);
+        //if runcat is scheduled to run, then unschedule that
+        if (runCatTimeOut!== null){
+            clearTimeout(runCatTimeOut)
+            runCatTimeOut == null
+            console.log("runcattimeout removed")
+        }
+        //if runcat is currently running, stop the framecycle interval 
+        //the if at the bottom of runcat() stops the schedule-next-run automatically
+        //if isbestmodelonger is true, so that should deal with itself
+        clearInterval(frameCycleInterval)
     } else {
         // hide sleepcat, hide runcat
         sleepCatPicture.setAttribute("hidden", "hidden");
         runCatPicture.setAttribute("hidden", "hidden");
         runCatPicture.src = `runcat/runcat_${currentCat}_0.png`;
-        //start the run cat animation handler function after a random delay
-        setTimeout(runCat, randomMilliseconds(10000,20000))
+        //start the run cat animation handler function
+        runCat()
     }
 }
 
-//running cat animation handler. I've left a couple of magic numbers in here, beware
+//running cat animation handler
 function runCat() {
+    if (isBestModeLonger){
+        return
+    }
+    console.log("runcat called")
     //initialise and actually show the frame
     let currentRunFrameNumber = 0;
     runCatPicture.removeAttribute("hidden");
@@ -375,7 +391,7 @@ function runCat() {
         runCatPicture.style.left = -catwidth+"px"
         runCatPicture.style.transform = "scaleX(1)"
     } else{
-        runCatPicture.style.left = screenwidth + "px"
+        runCatPicture.style.left = screenwidth + catwidth + "px"
         runCatPicture.style.transform = "scaleX(-1)"
     }
 
@@ -385,7 +401,7 @@ function runCat() {
     //3. hide when done
 
     //1. start the frame cycle
-    let frameCycleInterval = setInterval(() => {
+    frameCycleInterval = setInterval(() => {
         //% is to wrap the number
         currentRunFrameNumber = (currentRunFrameNumber+1) % numberOfFrames
         runCatPicture.src = `runcat/runcat_${currentCat}_${currentRunFrameNumber}.png`;
@@ -393,10 +409,8 @@ function runCat() {
 
     //2. start the css transition (easing animation, but not eased, it's linear)
     runCatPicture.style.transition = `left ${animationDuration}s linear`;
-    //and in 50 ms, actually move the cat's x position to either the left or the right edge
-    //of the screen, as appropriate.
-    //why 50ms? because if u do it immediately after setting the transition,
-    //js may just teleport the cat
+    //and actually move the cat's x position to either the left or the right edge
+    //cat will not teleport; the transition animates that smoothly
     setTimeout(()=>{
         if (isGoingRight){
             runCatPicture.style.left = screenwidth + catwidth + "px"
@@ -406,22 +420,25 @@ function runCat() {
     },50);
 
     //3. hide the cat once it's finished moving all the way
-    runCatPicture.addEventListener("transitionend", (event) => {
-        if (event.propertyName !== "left") return;
-        //stop the frame cycle
-        clearInterval(frameCycleInterval);
-        //hide the cat
-        runCatPicture.setAttribute("hidden", "hidden")
-        //stop the left/right transition animation
-        runCatPicture.style.transition = "none"
+    setTimeout(()=>{
+        runCatPicture.addEventListener("transitionend", (event) => {
+            if (event.propertyName !== "left") return;
+            //stop the frame cycle
+            clearInterval(frameCycleInterval);
+            //hide the cat
+            runCatPicture.setAttribute("hidden", "hidden")
+            //stop the left/right transition animation
+            runCatPicture.style.transition = "none"
 
-        //schedule the next run, by calling this whole function again
-        //in 50-80 seconds
-        //note: a bit hardcoded, maybe fix these magic numbers later
-        if (!isBestModeLonger){
-            runCatTimeOut=setTimeout(runCat, randomMilliseconds(50000,80000))
-        }
-    }, {once: true}); //ie: the event listener autoremoves itself after firing once
+            //schedule the next run, by calling this whole function again
+            //in 50-80 seconds
+            //note: a bit hardcoded, maybe fix these magic numbers later
+            if (!isBestModeLonger){
+                runCatTimeOut=setTimeout(runCat, randomMilliseconds(50000,80000))
+                console.log("runcattimeout started")
+            }
+        }, {once: true}); //ie: the event listener autoremoves itself after firing once
+    },100)
 }
 
 //returns random milliseconds from min to max

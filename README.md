@@ -89,10 +89,10 @@ New things I might explore next:
 
 
 
-### Future Ideas
+### Future Ideas and Known Bugs
 
+* There is an occasional bug where runcat() is called and immediately ends, meaning that the cat-running-across-the-screen animation doesn't happen at all. I checked this out in DevTools and a theory is that the transitionend listener (which should fire when the cat is done running across the screen) fires in response to something else. Since the cat is supposed to appear randomly anyway and this bug doesn't do anything critical, I left that in for now; the problem would be great to pinpoint one day though
 * Find out whether it's possible to use service workers to make the application work offline
 * Improve on the CSS for a nicer, less vibe-coded feel
 * Add a pomodoro mode
 * Saving a session should save what was being timed as well, and add a feature to sort the saved session list based on that
-
