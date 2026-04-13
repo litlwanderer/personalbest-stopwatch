@@ -348,8 +348,7 @@ function updateCatMode() {
     }
 }
 
-//running cat animation handler.
-//todo: There's a bunch of hardcoded numbers in here and randommilliseconds is still too small, it's debug
+//running cat animation handler. I've left a couple of magic numbers in here, beware
 function runCat() {
     //initialise and actually show the frame
     let currentRunFrameNumber = 0;
@@ -367,6 +366,9 @@ function runCat() {
     let frameCycleRate = 150; //in milliseconds
     //pick random direction
     const isGoingRight = Math.random() > 0.5;
+    //how many frames each cat run cycle has. change this if the total number of frames per loop changes
+    const numberOfFrames = 4; 
+
 
     //set starting pos and flip image if going left
     if (isGoingRight){
@@ -384,9 +386,8 @@ function runCat() {
 
     //1. start the frame cycle
     let frameCycleInterval = setInterval(() => {
-        currentRunFrameNumber = (currentRunFrameNumber+1) %4
-        //Note on above: 4 is the total number of frames so it wraps.
-        //bit of a magic number; change this if the total number of frames per loop changes
+        //% is to wrap the number
+        currentRunFrameNumber = (currentRunFrameNumber+1) % numberOfFrames
         runCatPicture.src = `runcat/runcat_${currentCat}_${currentRunFrameNumber}.png`;
     }, frameCycleRate)
 
@@ -416,7 +417,7 @@ function runCat() {
 
         //schedule the next run, by calling this whole function again
         //in 50-80 seconds
-        //note: a bit hardcoded, need to fix these magic numbers later
+        //note: a bit hardcoded, maybe fix these magic numbers later
         if (!isBestModeLonger){
             runCatTimeOut=setTimeout(runCat, randomMilliseconds(50000,80000))
         }
