@@ -1,6 +1,6 @@
-# Personal Best Stopwatch
+# Personal Best Stopwatch (with CATS)
 
-
+## Try it out here: https://litlwanderer.github.io/personalbest-stopwatch/
 
 ### What is this?
 
